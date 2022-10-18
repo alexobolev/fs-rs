@@ -1,0 +1,44 @@
+name: Build
+on:
+  push:
+    branches:
+      - main
+env:
+  CARGO_TERM_COLOR: always
+jobs:
+  build:
+    name: ${{ matrix.os-name }} build (${{ matrix.profile-name }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          # - windows-2022
+          - ubuntu-22.04
+          # - macos-12
+        profile:
+          - dev
+          - release
+        include:
+          # - os: windows-2022
+          #   os-name: Windows
+          - os: ubuntu-22.04
+            os-name: Ubuntu
+          # - os: macos-12
+          #   os-name: MacOS
+          - profile: dev
+            profile-name: development
+            profile-flag-rs: ''
+          - profile: release
+            profile-name: release
+            profile-flag-rs: '--release'
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build
+        run: |
+          cd Native
+          cargo build ${{ matrix.profile-flag-rs }}
+      - name: Run tests
+        run: |
+          cd Native
+          cargo test ${{ matrix.profile-flag-rs }}
