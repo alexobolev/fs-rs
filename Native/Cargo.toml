@@ -3,4 +3,8 @@ name = "native"
 version = "0.1.0"
 edition = "2021"
 
+[lib]
+# need the normal lib type for tests to be picked up
+crate-type = ["lib", "cdylib"]
+
 [dependencies]
