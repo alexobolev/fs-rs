@@ -1,0 +1,6 @@
+.fleet/**/*
+!.fleet/run.json
+.vscode/**/*
+!.vscode/settings.json
+!.vscode/tasks.json
+temp/
