@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+
+  <!-- After building .NET code, execute the foreign Rust project. -->
+  <!-- Notice the copy command after the import. -->
+  <Target Name="BuildRust" BeforeTargets="AfterBuild">
+    <MSBuild Projects="..\Native\Native.rsproj" Targets="Build">
+      <Output TaskParameter="TargetOutputs" PropertyName="RustOutput" />
+    </MSBuild>
+    <Copy SourceFiles="..\Native\$(RustOutput)" DestinationFolder="$(TargetDir)" />
+  </Target>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Native\Native.rsproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Program.fs" />
+  </ItemGroup>
+
+</Project>

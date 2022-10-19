@@ -1,0 +1,41 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+    <!-- Some default settings. -->
+    <PropertyGroup>
+        <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    </PropertyGroup>
+
+    <!-- Define output library extension. -->
+    <PropertyGroup>
+        <DynlibExt Condition="$([MSBuild]::IsOSPlatform('Windows'))">dll</DynlibExt>
+        <DynlibExt Condition="$([MSBuild]::IsOSPlatform('Linux'))">so</DynlibExt>
+        <DynlibExt Condition="$([MSBuild]::IsOSPlatform('Mac'))">NONE</DynlibExt>
+    </PropertyGroup>
+
+    <!-- Choose rust build folder name. -->
+    <PropertyGroup>
+        <RustConfig Condition=" '$(Configuration)' == 'Debug' ">debug</RustConfig>
+        <RustConfig Condition=" '$(Configuration)' == 'Release' ">release</RustConfig>
+    </PropertyGroup>
+
+    <!-- Choose additional rust build flags. -->
+    <PropertyGroup>
+        <RustExtraArgs Condition=" '$(Configuration)' == 'Debug' "></RustExtraArgs>
+        <RustExtraArgs Condition=" '$(Configuration)' == 'Release' "> --release </RustExtraArgs>
+    </PropertyGroup>
+
+    <!-- All Rust source files. -->
+    <ItemGroup>
+        <Compile Include="src\**\*.rs" />
+    </ItemGroup>
+
+    <!-- Execute cargo on source files. -->
+    <Target Name="Build"
+            Inputs="@(Compile);cargo.toml;cargo.lock"
+            Outputs="target\$(RustConfig)\Native.$(DynlibExt)">
+        <!-- <Exec Command="echo ~~ RUST: Configuration = $(Configuration) ~~" />
+        <Exec Command="echo ~~ RUST: RustConfig = $(RustConfig) ~~" /> -->
+        <Exec Command="cargo build $(RustExtraArgs)" />
+    </Target>
+
+</Project>
