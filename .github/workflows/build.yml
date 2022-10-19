@@ -39,7 +39,7 @@ jobs:
       - name: Build native code
         run: |
           cd Native
-          cargo build ${{ matrix.profile-flag-rs }}
+          cargo build --verbose ${{ matrix.profile-flag-rs }}
       - name: Run native tests
         run: |
           cd Native
@@ -47,4 +47,4 @@ jobs:
       - name: Build managed code
         run: |
           cd Managed
-          dotnet build -c ${{ matrix.profile-flag-net }}
+          dotnet build -c ${{ matrix.profile-flag-net }} --verbosity detailed
