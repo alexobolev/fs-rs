@@ -40,10 +40,10 @@ jobs:
         run: |
           cd Native
           cargo build --verbose ${{ matrix.profile-flag-rs }}
-      - name: Dump native output tree (TEMPORARY)
-        run: |
-          cd Native
-          find . | sed -e "s/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/|-\1/"
+      # - name: Dump native output tree (TEMPORARY)
+      #   run: |
+      #     cd Native
+      #     find . | sed -e "s/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/|-\1/"
       - name: Run native tests
         run: |
           cd Native
