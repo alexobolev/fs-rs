@@ -29,8 +29,7 @@ pub unsafe extern "C" fn BuilderFree<'a>(this: *mut Builder<'a>)
 pub unsafe extern "C" fn BuilderGetNumber<'a>(this: *mut Builder<'a>)
     -> c_int
 {
-    let builder = this.as_ref()
-        .expect("failed to get builder reference");
+    let builder = this.as_ref().expect("failed to get builder reference");
     builder.get_number()
 }
 
@@ -38,7 +37,25 @@ pub unsafe extern "C" fn BuilderGetNumber<'a>(this: *mut Builder<'a>)
 pub unsafe extern "C" fn BuilderSetNumber<'a>(this: *mut Builder<'a>, value: c_int)
     -> ()
 {
-    let builder = this.as_mut()
-        .expect("failed to get builder mut reference");
+    let builder = this.as_mut().expect("failed to get builder mut reference");
     builder.set_number(value as i32);
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn BuilderGetName<'a>(this: *mut Builder<'a>)
+    -> *const c_char
+{
+    println!("Getting name of a builder at {:p} => {}...", this, (*this).get_name());
+    let builder = this.as_mut().expect("failed to get builder mut reference");
+    builder.get_name().as_ptr() as *const c_char
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn BuilderSetName<'a>(this: *mut Builder<'a>, name: *const c_char)
+    -> ()
+{
+    let builder = this.as_mut().expect("failed to get builder mut reference");
+    let name_slice = CStr::from_ptr(name).to_str()
+        .expect("failed to convert foreign char* to a rust string");
+    builder.set_name(name_slice);
 }

@@ -1,5 +1,7 @@
 ﻿open System
+open System.Diagnostics
 open System.Runtime.InteropServices
+open System.Threading
 
 module internal InteropInternal =
 
@@ -14,6 +16,12 @@ module internal InteropInternal =
 
     [<DllImport("native", CallingConvention = CallingConvention.Cdecl)>]
     extern void internal BuilderSetNumber (IntPtr pointer, int32 value)
+    
+    [<DllImport("native", CallingConvention = CallingConvention.Cdecl)>]
+    extern string internal BuilderGetName (IntPtr pointer)
+
+    [<DllImport("native", CallingConvention = CallingConvention.Cdecl)>]
+    extern void internal BuilderSetName (IntPtr pointer, string value)
 
 module public Interop =
 
@@ -43,6 +51,10 @@ module public Interop =
         member self.Number
             with get () : int32 = InteropInternal.BuilderGetNumber (handle)
             and set (value : int32) = InteropInternal.BuilderSetNumber (handle, value)
+        
+        member self.Name
+            with get () : string = InteropInternal.BuilderGetName (handle)
+            and set (value : string) = InteropInternal.BuilderSetName (handle, value)
 
     
 
@@ -54,7 +66,12 @@ let main args =
     for index, arg in Seq.indexed args do
         printfn "Arg #%d => %s." index arg
 
+    if Seq.contains "--waitforit" args then
+        eprintfn "Waiting for user signal..."
+        Console.ReadKey () |> ignore
+        eprintfn "Signaled! Moving on..."
+
     use foo = new Interop.Builder ("John", 15)
-    printfn "Builder was initialized with value %d" foo.Number
+    printfn "Builder was initialized with values %d and %s" foo.Number foo.Name
 
     0
