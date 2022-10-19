@@ -40,6 +40,10 @@ jobs:
         run: |
           cd Native
           cargo build --verbose ${{ matrix.profile-flag-rs }}
+      - name: Dump native output tree (TEMPORARY)
+        run: |
+          cd Native
+          find . | sed -e "s/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/|-\1/"
       - name: Run native tests
         run: |
           cd Native
@@ -47,4 +51,4 @@ jobs:
       - name: Build managed code
         run: |
           cd Managed
-          dotnet build -c ${{ matrix.profile-flag-net }} --verbosity detailed
+          dotnet build -c ${{ matrix.profile-flag-net }} --verbosity normal
