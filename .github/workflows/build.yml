@@ -29,16 +29,22 @@ jobs:
           - profile: dev
             profile-name: development
             profile-flag-rs: ''
+            profile-flag-net: Debug
           - profile: release
             profile-name: release
             profile-flag-rs: '--release'
+            profile-flag-net: Release
     steps:
       - uses: actions/checkout@v3
-      - name: Build
+      - name: Build native code
         run: |
           cd Native
           cargo build ${{ matrix.profile-flag-rs }}
-      - name: Run tests
+      - name: Run native tests
         run: |
           cd Native
           cargo test ${{ matrix.profile-flag-rs }}
+      - name: Build managed code
+        run: |
+          cd Managed
+          dotnet build -c ${{ matrix.profile-flag-net }}
