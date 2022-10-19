@@ -11,6 +11,7 @@
     <MSBuild Projects="..\Native\Native.rsproj" Targets="Build">
       <Output TaskParameter="TargetOutputs" PropertyName="RustOutput" />
     </MSBuild>
+    <Exec Command="echo DEBUG RustOutput = $(RustOutput)" />
     <Copy SourceFiles="..\Native\$(RustOutput)" DestinationFolder="$(TargetDir)" />
   </Target>
 

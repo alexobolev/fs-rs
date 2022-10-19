@@ -2,14 +2,15 @@
 
     <!-- Some default settings. -->
     <PropertyGroup>
+        <RustOutputNameCore>native</RustOutputNameCore>
         <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     </PropertyGroup>
 
     <!-- Define output library extension. -->
     <PropertyGroup>
-        <DynlibExt Condition="$([MSBuild]::IsOSPlatform('Windows'))">dll</DynlibExt>
-        <DynlibExt Condition="$([MSBuild]::IsOSPlatform('Linux'))">so</DynlibExt>
-        <DynlibExt Condition="$([MSBuild]::IsOSPlatform('Mac'))">NONE</DynlibExt>
+        <RustDynlibName Condition="$([MSBuild]::IsOSPlatform('Windows'))">$(RustOutputNameCore).dll</RustDynlibName>
+        <RustDynlibName Condition="$([MSBuild]::IsOSPlatform('Linux'))">lib$(RustOutputNameCore).so</RustDynlibName>
+        <RustDynlibName Condition="$([MSBuild]::IsOSPlatform('Mac'))">NONE</RustDynlibName>
     </PropertyGroup>
 
     <!-- Choose rust build folder name. -->
@@ -32,9 +33,9 @@
     <!-- Execute cargo on source files. -->
     <Target Name="Build"
             Inputs="@(Compile);cargo.toml;cargo.lock"
-            Outputs="target\$(RustConfig)\Native.$(DynlibExt)">
-        <!-- <Exec Command="echo ~~ RUST: Configuration = $(Configuration) ~~" />
-        <Exec Command="echo ~~ RUST: RustConfig = $(RustConfig) ~~" /> -->
+            Outputs="target\$(RustConfig)\$(RustDynlibName)">
+        <!-- <Exec Command="echo ~~ RUST: Configuration = $(Configuration) ~~" />  -->
+        <!-- <Exec Command="echo ~~ RUST: RustConfig = $(RustConfig) ~~" /> -->
         <Exec Command="cargo build $(RustExtraArgs)" />
     </Target>
 
