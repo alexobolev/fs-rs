@@ -5,17 +5,23 @@ open System.Threading
 
 module internal InteropInternal =
 
+    (* Constructor/destructor. *)
+
     [<DllImport("native", CallingConvention = CallingConvention.Cdecl)>]
     extern IntPtr internal BuilderCreate (string name, int32 number)
     
     [<DllImport("native", CallingConvention = CallingConvention.Cdecl)>]
     extern void internal BuilderFree (IntPtr pointer)
+
+    (* Number getter/setter. *)
     
     [<DllImport("native", CallingConvention = CallingConvention.Cdecl)>]
     extern int32 internal BuilderGetNumber (IntPtr pointer)
 
     [<DllImport("native", CallingConvention = CallingConvention.Cdecl)>]
     extern void internal BuilderSetNumber (IntPtr pointer, int32 value)
+
+    (* Name getter/setter. *)
     
     [<DllImport("native", CallingConvention = CallingConvention.Cdecl)>]
     extern string internal BuilderGetName (IntPtr pointer)
@@ -61,10 +67,10 @@ module public Interop =
 [<EntryPoint>]
 let main args =
 
-    printfn "Hello from F#!"
+    printfn "Process ID = %d." (Process.GetCurrentProcess().Id)
 
     for index, arg in Seq.indexed args do
-        printfn "Arg #%d => %s." index arg
+        printfn "Process arg #%d => %s." (index + 1) arg
 
     if Seq.contains "--waitforit" args then
         eprintfn "Waiting for user signal..."

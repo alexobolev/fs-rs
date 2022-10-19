@@ -1,21 +1,24 @@
+use std::ffi::{CString};
+
+
 pub trait Greeter {
     fn say_hi(&self, name: &str);
 }
 
-pub struct Builder<'a> {
-    name: &'a str,
+pub struct Builder {
+    name: CString,
     number: i32
 }
 
-impl<'a> Builder<'a> {
+impl Builder {
 
     /// ```
     /// use native::implementation::Builder;
     /// let builder = Builder::new("John", 42);
     /// ```
-    pub fn new(name: &'a str, number: i32) -> Builder<'a> {
+    pub fn new(name: &str, number: i32) -> Builder {
         println!("[NATIVE] Initializing a Builder instance...");
-        Builder { name: name, number: number }
+        Builder { name: CString::new(name).unwrap(), number: number }
     }
 
     /// ```
@@ -23,7 +26,7 @@ impl<'a> Builder<'a> {
     /// let builder = Builder::new("Susan", 63);
     /// assert_eq!(builder.get_name(), "Susan");
     /// ```
-    pub fn get_name(&self) -> &'a str { self.name }
+    pub fn get_name(&self) -> &str { self.name.as_c_str().to_str().unwrap() }
 
     /// ```
     /// use native::implementation::Builder;
@@ -39,8 +42,10 @@ impl<'a> Builder<'a> {
     /// assert_eq!(builder.get_name(), "Thomas");
     /// assert_eq!(builder.get_number(), 84);
     /// ```
-    pub fn set_name(&mut self, value: &'a str) -> &Self {
-        self.name = value; self
+    pub fn set_name(&mut self, value: &str) -> &Self {
+        self.name = CString::new(value)
+            .expect("argument string contained an internal null");
+        self
     }
 
     /// ```
@@ -55,17 +60,16 @@ impl<'a> Builder<'a> {
     }
 }
 
-impl<'a> Greeter for Builder<'a> {
+impl Greeter for Builder {
     fn say_hi(&self, name: &str) {
         println!("Hi there, {}! I'm a Builder: name = {}, number = {}.",
-            name, self.name, self.number);
+            name, self.name.to_str().expect("contained string was invalid"),
+            self.number);
     }
 }
 
-impl<'a> Drop for Builder<'a> {
+impl Drop for Builder {
     fn drop(&mut self) {
         println!("[NATIVE] Dropping a Builder instance at {:p}...", self);
-        self.name = "N/A";
-        self.number = -1;
     }
 }
