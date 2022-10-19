@@ -3,16 +3,16 @@ open System.Runtime.InteropServices
 
 module internal InteropInternal =
 
-    [<DllImport("Native", CallingConvention = CallingConvention.Cdecl)>]
+    [<DllImport("native", CallingConvention = CallingConvention.Cdecl)>]
     extern IntPtr internal BuilderCreate (string name, int32 number)
     
-    [<DllImport("Native", CallingConvention = CallingConvention.Cdecl)>]
+    [<DllImport("native", CallingConvention = CallingConvention.Cdecl)>]
     extern void internal BuilderFree (IntPtr pointer)
     
-    [<DllImport("Native", CallingConvention = CallingConvention.Cdecl)>]
+    [<DllImport("native", CallingConvention = CallingConvention.Cdecl)>]
     extern int32 internal BuilderGetNumber (IntPtr pointer)
 
-    [<DllImport("Native", CallingConvention = CallingConvention.Cdecl)>]
+    [<DllImport("native", CallingConvention = CallingConvention.Cdecl)>]
     extern void internal BuilderSetNumber (IntPtr pointer, int32 value)
 
 module public Interop =
