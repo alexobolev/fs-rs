@@ -51,7 +51,7 @@ jobs:
       - name: Build managed code
         run: |
           cd Managed
-          dotnet build -c ${{ matrix.profile-flag-net }} --verbosity normal
+          dotnet build -c ${{ matrix.profile-flag-net }} --verbosity minimal
       - name: Run managed tests
         run: |
-          dotnet test -c ${{ matrix.profile-flag-net }} --verbosity normal
+          dotnet test -c ${{ matrix.profile-flag-net }} --verbosity minimal
