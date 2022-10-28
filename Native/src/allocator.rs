@@ -13,8 +13,8 @@ unsafe impl GlobalAlloc for LoggingAllocator {
     }
 
     unsafe fn dealloc(&self, ptr: *mut u8, layout: Layout) {
-        eprintln!("[ALLCTR] Deallocating {:p} with {} byte(s) [aligned to {}]",
-            ptr, layout.size(), layout.align());
+        let (size, align) = (layout.size(), layout.align());
+        eprintln!("[ALLCTR] Deallocating {:p} with {} byte(s) [aligned to {}]", ptr, size, align);
         System.dealloc(ptr, layout);
         eprintln!("[ALLCTR]   ... done!");
     }

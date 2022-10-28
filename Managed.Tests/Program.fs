@@ -50,26 +50,16 @@ module Program =
     [<EntryPoint>]
     let main args =
 
-        let getExeDirectory () =
-            let assembly = Assembly.GetExecutingAssembly()
-            assembly.Location |> Path.GetDirectoryName
+        let executablePath = Assembly.GetExecutingAssembly().Location
+        let assemblyPath = Path.ChangeExtension(executablePath, "dll")
 
-        let rootInExeDirectory file =
-            Path.GetFullPath(file, getExeDirectory())
-
-        let (assemblyName, typeName) =
-            match args.Length with
-            | 1 -> (rootInExeDirectory args[0], null)
-            | 2 -> (rootInExeDirectory args[0], args[1])
-            | _ -> failwithf "Must have 1 or 2 arguments, had %A!" args
-        
-        use runner = AssemblyRunner.WithoutAppDomain assemblyName
+        use runner = AssemblyRunner.WithoutAppDomain assemblyPath
         runner.OnDiscoveryComplete <- onDiscoveryComplete
         runner.OnExecutionComplete <- onExecutionComplete
         runner.OnTestFailed <- onTestFailed
         runner.OnTestSkipped <- onTestSkipped
 
-        runner.Start typeName
+        runner.Start ()
         testFinished.WaitOne () |> ignore
         testFinished.Dispose () |> ignore
 
