@@ -36,6 +36,10 @@ jobs:
             profile-flag-net: Release
     steps:
       - uses: actions/checkout@v3
+      - name: Pull native dependencies
+        run: |
+          cd Native
+          cargo fetch --verbose
       - name: Build native code
         run: |
           cd Native
@@ -48,6 +52,10 @@ jobs:
         run: |
           cd Native
           cargo test ${{ matrix.profile-flag-rs }}
+      - name: Pull managed dependencies
+        run: |
+          cd Managed
+          dotnet restore --verbosity minimal
       - name: Build managed code
         run: |
           cd Managed
